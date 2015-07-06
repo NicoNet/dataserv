@@ -1,8 +1,8 @@
-
 import os
 import hashlib
 import binascii
 import RandomIO
+import partialhash
 from dataserv.run import app, db
 
 
@@ -77,9 +77,12 @@ class Contract(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def get_contracts(self):
+        return Contract.query.filter_by(btc_addr=self.btc_addr).all()
+
     def list_contracts(self):
         """List all the contracts for the farmer."""
-        contracts = Contract.query.filter_by(btc_addr=self.btc_addr).all()
+        contracts = self.get_contracts()
         json_contracts = []
 
         for contract in contracts:
@@ -90,3 +93,9 @@ class Contract(db.Model):
         }
 
         return payload_template
+
+    def audit(self):
+        path = RandomIO.RandomIO(self.seed).genfile(self.byte_size, 'data/'+self.file_hash)
+        digest = partialhash.compute(path, seed=b'seeddata')
+        print(binascii.hexlify(digest))
+        print(self.file_hash)

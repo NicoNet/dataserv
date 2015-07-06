@@ -92,7 +92,13 @@ class Farmer(db.Model):
         the farmer completes an audit we also update when we last saw them.
 
         """
+        con = Contract(self.btc_addr)
+        contracts = con.get_contracts()
+        for single_contract in contracts:
+            single_contract.audit()
+
         self.update_time(True, True)
+
 
     def new_contract(self, seed=None):
         """Generate a new contract for the farmer."""
