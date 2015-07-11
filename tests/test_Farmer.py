@@ -118,5 +118,5 @@ class FarmerTest(unittest.TestCase):
         con2.new_contract()
         con3.new_contract()
 
+        # audit the farmer
         farmer.audit()
-

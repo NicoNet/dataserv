@@ -94,8 +94,15 @@ class Contract(db.Model):
 
         return payload_template
 
-    def audit(self):
-        path = RandomIO.RandomIO(self.seed).genfile(self.byte_size, 'data/'+self.file_hash)
-        digest = partialhash.compute(path, seed=b'seeddata')
-        print(binascii.hexlify(digest))
-        print(self.file_hash)
+    def audit(self, audit_seed):
+        """Do a cryptographic audit for the file."""
+        # temporarily create the file object for challenges
+        tmp_path = RandomIO.RandomIO(self.seed).genfile(self.byte_size, 'data/'+self.file_hash)
+
+        # create digest from the computed seed
+        digest = partialhash.compute(tmp_path, seed=audit_seed)
+
+        # remove the temporary file
+        os.remove(tmp_path)
+
+        return binascii.hexlify(digest)

@@ -85,7 +85,6 @@ class Farmer(db.Model):
         """
         self.update_time(True)
 
-    # TODO: Actually do an audit.
     def audit(self):
         """
         Complete a cryptographic audit of files stored on the farmer. If
@@ -95,7 +94,7 @@ class Farmer(db.Model):
         con = Contract(self.btc_addr)
         contracts = con.get_contracts()
         for single_contract in contracts:
-            single_contract.audit()
+            single_contract.audit(b'test_seed')
 
         self.update_time(True, True)
 
