@@ -12,9 +12,13 @@ class Contract(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     btc_addr = db.Column(db.String(35))
     contract_type = db.Column(db.Integer, default=0)
-    file_hash = db.Column(db.String(128))
-    byte_size = db.Column(db.Integer, default=0)
     seed = db.Column(db.String(128), unique=True)
+    byte_size = db.Column(db.Integer, default=0)
+    file_hash = db.Column(db.String(128))
+
+    audit_seed = db.Column(db.String(128))
+    audit_response = db.Column(db.String(128))
+    audit_open = db.Column(db.Boolean, default=False)
     last_audit = db.Column(DateTime, default=datetime.utcnow)
 
     def __init__(self, btc_addr):

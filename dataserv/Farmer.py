@@ -92,7 +92,6 @@ class Farmer(db.Model):
         # update last_seen
         self.ping()
 
-
     def new_contract(self, seed=None):
         """Generate a new contract for the farmer."""
         self.validate()
