@@ -102,7 +102,7 @@ Success Examples:
 ### New Contract
 Farmer want to get a new contract. We want to give them a "proof of capacity" contract, also known as a state "0" contract. 
  
-    GET /api/contract/new/<btc_address>
+    GET /api/contract/new/<btc_address>/
     
 Success Example:
     
@@ -141,7 +141,7 @@ Fail Example:
 ### List Contracts
 We want to know what contracts the node thinks the node the farmer should be storing.
 
-    GET /api/contract/list/<btc_address>
+    GET /api/contract/list/<btc_address>/
   
 Success Example:
 
