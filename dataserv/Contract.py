@@ -3,6 +3,8 @@ import hashlib
 import binascii
 import RandomIO
 import partialhash
+from datetime import datetime
+from sqlalchemy import DateTime
 from dataserv.run import app, db
 
 
@@ -13,6 +15,7 @@ class Contract(db.Model):
     file_hash = db.Column(db.String(128))
     byte_size = db.Column(db.Integer, default=0)
     seed = db.Column(db.String(128), unique=True)
+    last_audit = db.Column(DateTime, default=datetime.utcnow)
 
     def __init__(self, btc_addr):
         """Contracts contain the file information for file objects to be stored by the Farmer."""
@@ -25,7 +28,8 @@ class Contract(db.Model):
             "contract_type": self.contract_type,
             "file_hash": self.file_hash,
             "byte_size": self.byte_size,
-            "seed": self.seed
+            "seed": self.seed,
+            "last_audit": self.last_audit
         }
 
         return contract_template

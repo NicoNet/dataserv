@@ -17,9 +17,8 @@ class Farmer(db.Model):
     btc_addr = db.Column(db.String(35), unique=True)
 
     last_seen = db.Column(DateTime, default=datetime.utcnow)
-    last_audit = db.Column(DateTime, default=datetime.utcnow)
 
-    def __init__(self, btc_addr, last_seen=None, last_audit=None):
+    def __init__(self, btc_addr):
         """
         A farmer is a un-trusted client that provides some disk space
         in exchange for payment. We use this object to keep track of
@@ -27,8 +26,6 @@ class Farmer(db.Model):
 
         """
         self.btc_addr = btc_addr
-        self.last_seen = last_seen
-        self.last_audit = last_audit
 
     def __repr__(self):
         return '<Farmer BTC Address: %r>' % self.btc_addr
@@ -66,24 +63,17 @@ class Farmer(db.Model):
         farmer = Farmer.query.filter_by(btc_addr=self.btc_addr).first()
         return farmer
 
-    def update_time(self, ping=False, audit=False):
-        """Update last_seen and last_audit for each farmer."""
-        farmer = self.lookup()
-
-        now = datetime.utcnow()
-        if ping:
-            farmer.last_seen = now
-        if audit:
-            farmer.last_audit = now
-        db.session.commit()
-
     def ping(self):
         """
         Keep-alive for the farmer. Validation can take a long time, so
         we just want to know if they are still there.
 
         """
-        self.update_time(True)
+        farmer = self.lookup()
+
+        now = datetime.utcnow()
+        farmer.last_seen = now
+        db.session.commit()
 
     def audit(self):
         """
@@ -99,8 +89,8 @@ class Farmer(db.Model):
         for single_contract in contracts:
             single_contract.audit(b'test_seed')
 
-        # update last_seen and audit time
-        self.update_time(True, True)
+        # update last_seen
+        self.ping()
 
 
     def new_contract(self, seed=None):

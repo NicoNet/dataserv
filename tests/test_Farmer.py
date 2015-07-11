@@ -57,11 +57,8 @@ class FarmerTest(unittest.TestCase):
         register_time = farmer.last_seen
         farmer.ping()  # update last seen
         ping_time = farmer.last_seen
-        audit_time = farmer.last_audit
 
         self.assertTrue(register_time < ping_time)
-        # ping time should always be more recent or equal to audit time
-        self.assertTrue(ping_time >= audit_time)
 
     def test_ping_failed(self):
         addr = '191GVvAaTRxLmz3rW3nU5jAV1rF186VxQc'
@@ -78,11 +75,8 @@ class FarmerTest(unittest.TestCase):
         register_time = farmer.last_seen
         farmer.audit()
         ping_time = farmer.last_seen
-        audit_time = farmer.last_audit
 
         self.assertTrue(register_time < ping_time)
-        # ping time should always be more recent or equal to audit time
-        self.assertTrue(ping_time >= audit_time)
 
     def test_audit_time_failed(self):
         addr = '191GVvAaTRxLmz3rW3nU5jAV1rF186VxQc'
