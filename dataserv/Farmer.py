@@ -89,13 +89,17 @@ class Farmer(db.Model):
         """
         Complete a cryptographic audit of files stored on the farmer. If
         the farmer completes an audit we also update when we last saw them.
-
         """
+
+        # grab all the contracts for a particular farmer
         con = Contract(self.btc_addr)
         contracts = con.get_contracts()
+
+        # check audits for all farmers
         for single_contract in contracts:
             single_contract.audit(b'test_seed')
 
+        # update last_seen and audit time
         self.update_time(True, True)
 
 
