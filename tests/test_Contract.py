@@ -83,3 +83,13 @@ class ContractTest(unittest.TestCase):
         # audit contract
         response_expected = b'e55d28d60e3e115a4a220e54b83fe2ff645dc2bbd401ab80d6db72814d867840'
         self.assertEqual(con.audit(b'test_seed'), response_expected)
+
+    def test_id(self):
+        addr = '191GVvAaTRxLmz3rW3nU5jAV1rF186VxQc'
+
+        # create contract
+        con = Contract(addr)
+        con.new_contract('ba17da75c580a0749b6c3d32', 1024)
+
+        # check contract id
+        self.assertEqual(con.get_id(), 1)

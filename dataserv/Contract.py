@@ -5,6 +5,7 @@ import RandomIO
 import partialhash
 from datetime import datetime
 from sqlalchemy import DateTime
+from dataserv.Audit import Audit
 from dataserv.run import app, db
 
 
@@ -110,8 +111,16 @@ class Contract(db.Model):
 
         # create digest from the computed seed
         digest = partialhash.compute(tmp_path, seed=audit_seed)
+        audit_response = binascii.hexlify(digest)
+
+        # create audit object
+        audit = Audit(self.id, self.audit_seed, self.audit_response)
 
         # remove the temporary file
         os.remove(tmp_path)
 
-        return binascii.hexlify(digest)
+        return audit_response
+
+    def get_id(self):
+        "Get primary key for contract."
+        return self.id
