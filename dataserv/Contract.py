@@ -104,23 +104,26 @@ class Contract(db.Model):
 
         return payload_template
 
-    def audit(self, audit_seed):
-        """Do a cryptographic audit for the file."""
-        # temporarily create the file object for challenges
+    def build_audits(self, num_audits):
+        # temporarily create the file to build audits
         tmp_path = RandomIO.RandomIO(self.seed).genfile(self.byte_size, 'data/'+self.file_hash)
 
-        # create digest from the computed seed
-        digest = partialhash.compute(tmp_path, seed=audit_seed)
-        audit_response = binascii.hexlify(digest)
+        # build audits
+        for i in range(num_audits):
+            # generate seed
+            rand_seed = os.urandom(12)
+            audit_seed = binascii.hexlify(rand_seed).decode('ascii')
 
-        # create audit object
-        audit = Audit(self.id, self.audit_seed, self.audit_response)
+            # create digest from the computed seed
+            digest = partialhash.compute(tmp_path, seed=audit_seed)
+            audit_response = binascii.hexlify(digest)
+
+            # create audit object which saves to the db when created
+            Audit(self.id, audit_seed, audit_response)
 
         # remove the temporary file
         os.remove(tmp_path)
 
-        return audit_response
-
     def get_id(self):
-        "Get primary key for contract."
+        """Get primary key for contract."""
         return self.id
